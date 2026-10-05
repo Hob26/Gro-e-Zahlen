@@ -1,0 +1,422 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Große Zahlen – Übungen</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#f7fafd;--grid:#dce7f3;--ink:#1d2b3a;--blue:#1f5fad;--muted:#56677a;--margin:#e2605a;
+  --sheet:#ffffff;--line:#c9d6e4;--tile:#eef3f9;
+  --leicht:#4b9a2c;--mittel:#c8740f;--schwer:#7b3f91;
+  --ok:#1f7f49;--okbg:#e3f4ea;--bad:#c2332c;--badbg:#fbe6e4;
+  --lvc:var(--leicht);
+  color-scheme:light;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --paper:#111b26;--grid:#1a2837;--ink:#e5ecf4;--blue:#86b5ef;--muted:#a1b3c6;--margin:#b4524d;
+    --sheet:#172331;--line:#2d3f53;--tile:#22324a;
+    --leicht:#7cc65a;--mittel:#f1a748;--schwer:#c690dc;
+    --ok:#62d394;--okbg:#163828;--bad:#ff857c;--badbg:#3c1d1b;color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#111b26;--grid:#1a2837;--ink:#e5ecf4;--blue:#86b5ef;--muted:#a1b3c6;--margin:#b4524d;
+  --sheet:#172331;--line:#2d3f53;--tile:#22324a;
+  --leicht:#7cc65a;--mittel:#f1a748;--schwer:#c690dc;
+  --ok:#62d394;--okbg:#163828;--bad:#ff857c;--badbg:#3c1d1b;color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
+body{
+  margin:0;min-height:100%;
+  font-family:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  font-size:18px;line-height:1.45;color:var(--ink);
+  background-color:var(--paper);
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:22px 22px;
+}
+button{font:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+
+/* Kopfzeile */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--paper);border-bottom:2px solid var(--line)}
+.top-in{max-width:880px;margin:0 auto;padding:10px 16px;display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;justify-content:space-between}
+.brand{display:flex;align-items:center;gap:12px;min-width:0}
+h1{font-size:1.3rem;margin:0;color:var(--blue);white-space:nowrap}
+.back{border:2px solid var(--line);background:var(--sheet);color:var(--ink);border-radius:8px;padding:5px 12px;font-weight:700}
+.back:hover{border-color:var(--blue)}
+.levels{display:flex;gap:6px}
+.lv{--c:var(--leicht);display:flex;align-items:center;gap:8px;border:2px solid var(--c);color:var(--c);background:var(--sheet);border-radius:8px;padding:6px 14px;font-weight:700}
+.lv .dot{width:11px;height:11px;border-radius:3px;background:var(--c)}
+.lv[aria-pressed="true"]{background:var(--c);color:var(--sheet)}
+.lv[aria-pressed="true"] .dot{background:var(--sheet)}
+
+/* Heftseite */
+.sheet{max-width:880px;margin:22px auto 44px;background:var(--sheet);border:1px solid var(--line);border-radius:4px;padding:22px 24px 28px 62px;position:relative}
+.sheet::before{content:"";position:absolute;left:42px;top:0;bottom:0;width:2px;background:var(--margin);opacity:.75}
+h2{margin:0 0 4px;font-size:1.45rem;color:var(--blue)}
+.intro{margin:0;color:var(--ink);max-width:62ch}
+.head{display:flex;flex-wrap:wrap;gap:12px 20px;align-items:flex-end;justify-content:space-between;padding-bottom:14px;border-bottom:2px solid var(--line)}
+.tools{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.prog{color:var(--muted);font-variant-numeric:tabular-nums}
+
+.btn{border:2px solid var(--blue);background:var(--blue);color:var(--sheet);border-radius:8px;padding:8px 16px;font-weight:700}
+.btn:hover{filter:brightness(1.08)}
+.btn.ghost{background:transparent;color:var(--blue)}
+
+/* Startseite */
+.choices{display:grid;gap:12px;margin-top:18px}
+.choice{display:grid;grid-template-columns:1fr auto;gap:4px 20px;align-items:center;text-align:left;background:var(--sheet);color:var(--ink);border:2px solid var(--line);border-radius:10px;padding:16px 18px}
+.choice:hover{border-color:var(--lvc)}
+.choice .ct{font-weight:700;font-size:1.2rem;color:var(--blue)}
+.choice .cd{grid-column:1;color:var(--muted)}
+.choice .cs{grid-column:2;grid-row:1 / span 2;font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap;background:var(--tile);border-radius:6px;padding:6px 12px}
+@media (max-width:600px){.choice{grid-template-columns:1fr}.choice .cs{grid-column:1;grid-row:auto;justify-self:start;margin-top:6px}}
+
+/* Teilaufgaben */
+.items{list-style:none;margin:0;padding:0}
+.item{display:grid;grid-template-columns:2.2em 1fr;gap:0 8px;padding:18px 0;border-bottom:1px dashed var(--line)}
+.item:last-child{border-bottom:none}
+.lbl{color:var(--blue);font-weight:700;font-size:1.15rem;padding-top:2px}
+.body{min-width:0}
+.num{font-variant-numeric:tabular-nums;font-weight:700;font-size:1.4rem;white-space:nowrap}
+.fb{margin:8px 0 0;min-height:1.45em;max-width:62ch}
+.fb.ok{color:var(--ok);font-weight:700}
+.fb.bad{color:var(--bad)}
+.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+
+/* Vorgänger / Nachfolger */
+.nf{display:grid;grid-template-columns:1fr auto 1fr;gap:10px 16px;align-items:end;max-width:640px}
+.nf .center{text-align:center;padding-bottom:6px}
+.nf .num{font-size:1.65rem}
+.field{display:flex;flex-direction:column;gap:4px;font-size:.92rem;color:var(--muted);font-weight:700}
+.inp{width:100%;font:inherit;font-size:1.25rem;font-weight:700;font-variant-numeric:tabular-nums;color:var(--ink);background:var(--sheet);border:2px solid var(--line);border-radius:7px;padding:8px 10px}
+.inp:focus{border-color:var(--blue);outline:none}
+.inp.ok{border-color:var(--ok);background:var(--okbg)}
+.inp.bad{border-color:var(--bad);background:var(--badbg)}
+.inp:disabled{opacity:1;color:var(--ink)}
+@media (max-width:560px){
+  .nf{grid-template-columns:1fr 1fr}
+  .nf .center{grid-column:1 / -1;grid-row:1;text-align:left;padding:0}
+}
+
+/* Vergleichen */
+.sentence{margin:0 0 10px;font-size:1.1rem}
+.cmp{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.signs{display:flex;gap:6px}
+.sg{width:52px;height:48px;border:2px solid var(--line);background:var(--sheet);color:var(--ink);border-radius:8px;font-size:1.6rem;font-weight:700;line-height:1}
+.sg:hover:not(:disabled){border-color:var(--blue)}
+.sg.ok{border-color:var(--ok);background:var(--okbg);color:var(--ok)}
+.sg.bad{border-color:var(--bad);background:var(--badbg);color:var(--bad)}
+.sg:disabled{cursor:default}
+
+/* Ordnen */
+.pool,.ans{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.pool{min-height:48px}
+.ans{margin-top:14px;padding:10px;border:2px dashed var(--line);border-radius:10px;min-height:66px}
+.tile{display:inline-flex;align-items:stretch;border:2px solid transparent;border-radius:9px;overflow:hidden;background:var(--tile);color:var(--ink);padding:0}
+.tile .L{background:var(--lvc);color:var(--sheet);font-weight:700;padding:8px 11px;display:flex;align-items:center}
+.tile .N{padding:8px 12px;font-variant-numeric:tabular-nums;font-weight:700;font-size:1.12rem;white-space:nowrap;display:flex;align-items:center}
+.tile:hover:not(:disabled){border-color:var(--blue)}
+.tile.ok{border-color:var(--ok);background:var(--okbg)}
+.tile.bad{border-color:var(--bad);background:var(--badbg)}
+.tile:disabled{cursor:default}
+.slot{width:64px;height:44px;border-radius:9px;background:var(--tile);opacity:.6}
+.lt{font-weight:700;font-size:1.3rem;color:var(--muted)}
+.empty{color:var(--muted);font-size:.95rem}
+.word{display:inline-block;margin-left:6px;letter-spacing:.25em;font-size:1.3rem;background:var(--lvc);color:var(--sheet);padding:2px 6px 2px 10px;border-radius:6px}
+
+.done{margin-top:18px;padding:16px 18px;border:2px solid var(--lvc);border-radius:10px;display:flex;flex-wrap:wrap;gap:12px 20px;align-items:center;justify-content:space-between}
+.done p{margin:0}
+
+.shake{animation:shake .35s}
+@keyframes shake{25%{transform:translateX(-5px)}50%{transform:translateX(5px)}75%{transform:translateX(-3px)}}
+@media (prefers-reduced-motion:reduce){.shake{animation:none}}
+
+@media (max-width:560px){
+  body{font-size:17px}
+  .sheet{margin:12px 6px 28px;padding:16px 12px 22px 38px}
+  .sheet::before{left:26px}
+  .top-in{padding:8px 10px}
+  .lv{padding:5px 10px}
+  .item{grid-template-columns:1.8em 1fr}
+}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="top-in">
+    <div class="brand">
+      <button class="back" id="back" hidden>‹ Aufgaben</button>
+      <h1>Große Zahlen</h1>
+    </div>
+    <div class="levels" role="group" aria-label="Niveau">
+      <button class="lv" data-lv="leicht" style="--c:var(--leicht)" aria-pressed="true"><span class="dot"></span>Leicht</button>
+      <button class="lv" data-lv="mittel" style="--c:var(--mittel)" aria-pressed="false"><span class="dot"></span>Mittel</button>
+      <button class="lv" data-lv="schwer" style="--c:var(--schwer)" aria-pressed="false"><span class="dot"></span>Schwer</button>
+    </div>
+  </div>
+</header>
+<main id="app"></main>
+
+<script>
+const $=(s,r=document)=>r.querySelector(s);
+const app=$('#app');
+const LETTERS='abcdefghijkl';
+const R=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=R(0,i);[a[i],a[j]]=[a[j],a[i]]}return a};
+const fmt=n=>String(n).replace(/\B(?=(\d{3})+(?!\d))/g,'\u202F');
+const randDigits=d=>{let s=String(R(1,9));for(let i=1;i<d;i++)s+=R(0,9);return s};
+const parse=v=>{v=String(v).replace(/[\s.\u202F\u2009',]/g,'');return /^\d+$/.test(v)?Number(v):NaN};
+
+const TASKS={
+  nf:{title:'Vorgänger und Nachfolger',intro:'Nenne jeweils den unmittelbaren Vorgänger und Nachfolger.',desc:'Die Zahl direkt davor und direkt danach finden',sample:'479 | 480 | 481',count:6},
+  vgl:{title:'Größer oder kleiner',intro:'Setze < oder > ein. Tippe das richtige Zeichen an.',desc:'Zwei Zahlen vergleichen und das Zeichen setzen',sample:'19\u202F378 > 16\u202F378',count:8},
+  ord:{title:'Zahlen ordnen',intro:'Ordne die Zahlen der Größe nach. Beginne mit der kleinsten Zahl. Tippe die Karten der Reihe nach an – die Buchstaben ergeben ein Lösungswort.',desc:'Von klein nach groß sortieren, Lösungswort finden',sample:'4\u202F004\u202F040 < 4\u202F040\u202F004',count:3}
+};
+const WORDS={
+  4:['BAUM','MAUS','HAUS','BOOT','BALL','MOND','WOLF','ROSE','BUCH','SAFT','BERG','IGEL','HASE','ESEL','NEST','ZAHL','KORB'],
+  5:['KATZE','PFERD','SONNE','APFEL','BIRNE','TIGER','ZEBRA','HONIG','PIZZA','KREIS','REGEN','SCHAF','WOLKE','INSEL','BLUME','KERZE'],
+  6:['ZAHLEN','BANANE','GARTEN','SCHULE','RAKETE','DRACHE','KOFFER','PINSEL','TOMATE','SOMMER','WINTER','FERIEN','KAKTUS','BRILLE']
+};
+
+let S={task:null,level:'leicht',items:[]};
+
+/* ---------- Generatoren ---------- */
+function genNF(lv){
+  const cfg={
+    leicht:{d:[3,4],k:2,types:['rand','nines','zeros','nines','zeros']},
+    mittel:{d:[5,6],k:4,types:['rand','nines','zeros','mixed','nines','zeros']},
+    schwer:{d:[7,9],k:6,types:['nines','zeros','mixed','nines','zeros']}
+  }[lv];
+  const out=[],seen=new Set();
+  while(out.length<TASKS.nf.count){
+    const d=R(...cfg.d),t=pick(cfg.types);let s;
+    if(t==='rand') s=randDigits(d);
+    else if(t==='mixed'){s=String(R(1,9));for(let i=1;i<d;i++){const r=Math.random();s+=r<.5?'9':r<.75?'0':R(0,9)}}
+    else{
+      const k=R(1,Math.min(cfg.k,d-1));
+      const head=d-k>1?randDigits(d-k-1):'';
+      const last=t==='nines'?R(head?0:1,8):R(1,9);
+      s=head+last+(t==='nines'?'9':'0').repeat(k);
+    }
+    const n=Number(s);
+    if(n<100||seen.has(n))continue;
+    seen.add(n);
+    out.push({n,pred:n-1,succ:n+1,status:null,first:true});
+  }
+  return out;
+}
+
+function genVGL(lv){
+  const D={leicht:[4,5],mittel:[6,6],schwer:[7,9]}[lv];
+  const out=[],seen=new Set();
+  while(out.length<TASKS.vgl.count){
+    const d=R(...D);
+    const a=randDigits(d).split('').map(Number),b=a.slice();
+    let lo,hi;
+    if(lv==='leicht'){lo=0;hi=Math.min(2,d-1)}
+    else if(lv==='mittel'){lo=1;hi=d-1}
+    else{lo=Math.floor(d/2);hi=d-1}
+    const i=R(lo,hi);
+    if(lv!=='leicht'&&Math.random()<.6){
+      const j=i<d-1?i+1:i-1;
+      if(a[i]===a[j])continue;
+      [b[i],b[j]]=[b[j],b[i]];
+      if(b[0]===0)continue;
+    }else{
+      let v=a[i]+(Math.random()<.5?1:-1);
+      if(lv==='leicht'||v<0||v>9||(i===0&&v===0)){do{v=R(i===0?1:0,9)}while(v===a[i])}
+      b[i]=v;
+    }
+    let x=Number(a.join('')),y=Number(b.join(''));
+    if(x===y)continue;
+    if(Math.random()<.5)[x,y]=[y,x];
+    const key=x+'|'+y;if(seen.has(key))continue;seen.add(key);
+    out.push({x,y,word:x>y?'größer':'kleiner',sign:x>y?'>':'<',status:null,first:true});
+  }
+  return out;
+}
+
+function genORD(lv){
+  const cfg={leicht:{L:4,d:5},mittel:{L:5,d:7},schwer:{L:6,d:10}}[lv];
+  const words=shuffle(WORDS[cfg.L]);const out=[];
+  for(let t=0;t<TASKS.ord.count;t++){
+    const a=R(1,9);let b;do{b=R(1,9)}while(b===a);
+    const set=lv==='leicht'?[a,0]:lv==='mittel'?(Math.random()<.5?[a,0]:[a,b]):[a,b,0];
+    const nz=set.filter(x=>x),nums=new Set();
+    while(nums.size<cfg.L){let s=String(pick(nz));for(let i=1;i<cfg.d;i++)s+=pick(set);nums.add(Number(s))}
+    const sorted=[...nums].sort((x,y)=>x-y),w=words[t];
+    let order;do{order=shuffle(sorted.map((_,i)=>i))}while(order.every((k,i)=>k===i));
+    out.push({word:w,nums:sorted.map((n,i)=>({n,l:w[i]})),order,placed:[],status:null,first:true});
+  }
+  return out;
+}
+
+/* ---------- Hilfen ---------- */
+function mark(el,ok){el.classList.toggle('ok',ok);el.classList.toggle('bad',!ok)}
+function shake(el){const it=el.closest('.item');it.classList.remove('shake');void it.offsetWidth;it.classList.add('shake')}
+function setFb(fb,cls,html){fb.className='fb'+(cls?' '+cls:'');fb.innerHTML=html}
+
+/* ---------- Ansichten ---------- */
+function setLevel(lv){
+  S.level=lv;
+  document.body.style.setProperty('--lvc',`var(--${lv})`);
+  document.querySelectorAll('.lv').forEach(b=>b.setAttribute('aria-pressed',b.dataset.lv===lv));
+  if(S.task)newSet();
+}
+
+function renderHome(){
+  S.task=null;$('#back').hidden=true;
+  app.innerHTML=`<section class="sheet">
+    <h2>Welche Aufgabe möchtest du üben?</h2>
+    <p class="intro">Wähle oben dein Niveau. Du kannst es jederzeit wechseln.</p>
+    <div class="choices">${Object.entries(TASKS).map(([k,t])=>`
+      <button class="choice" data-task="${k}"><span class="ct">${t.title}</span><span class="cd">${t.desc}</span><span class="cs">${t.sample}</span></button>`).join('')}
+    </div></section>`;
+  app.querySelectorAll('.choice').forEach(b=>b.onclick=()=>{S.task=b.dataset.task;newSet();window.scrollTo(0,0)});
+}
+
+function newSet(){
+  S.items={nf:genNF,vgl:genVGL,ord:genORD}[S.task](S.level);
+  renderTask();
+}
+
+function renderTask(){
+  const t=TASKS[S.task];$('#back').hidden=false;
+  app.innerHTML=`<section class="sheet">
+    <div class="head"><div><h2>${t.title}</h2><p class="intro">${t.intro}</p></div>
+    <div class="tools"><span class="prog" id="prog"></span><button class="btn" id="new">Neue Aufgaben</button></div></div>
+    <ol class="items" id="items"></ol>
+    <div class="done" id="done" hidden></div></section>`;
+  $('#new').onclick=newSet;
+  const ol=$('#items');
+  S.items.forEach((it,i)=>{
+    const li=document.createElement('li');li.className='item';
+    li.innerHTML=`<span class="lbl">${LETTERS[i]})</span><div class="body"></div>`;
+    ol.appendChild(li);
+    ({nf:buildNF,vgl:buildVGL,ord:buildORD})[S.task](it,li.querySelector('.body'));
+  });
+  updateProg();
+}
+
+function updateProg(){
+  const n=S.items.length,d=S.items.filter(i=>i.status).length,f=S.items.filter(i=>i.status==='ok'&&i.first).length;
+  $('#prog').textContent=`${d} von ${n} bearbeitet`;
+  const done=$('#done');
+  if(d===n){
+    done.hidden=false;
+    done.innerHTML=`<p><strong>Fertig!</strong> Beim ersten Versuch richtig: ${f} von ${n}.</p><button class="btn" id="new2">Neue Aufgaben</button>`;
+    $('#new2').onclick=()=>{newSet();window.scrollTo(0,0)};
+  }else done.hidden=true;
+}
+
+/* Vorgänger / Nachfolger */
+function hintNF(it,oa,ob){
+  const s=String(it.n),h=[];
+  if(!oa)h.push(/0$/.test(s)?'Vorgänger: Die Nullen am Ende werden zu Neunen, die Stelle davor wird um 1 kleiner.':'Vorgänger: Zahl minus 1.');
+  if(!ob)h.push(/9$/.test(s)?'Nachfolger: Die Neunen am Ende werden zu Nullen, die Stelle davor wird um 1 größer.':'Nachfolger: Zahl plus 1.');
+  return h.join(' ');
+}
+function buildNF(it,el){
+  el.innerHTML=`<div class="nf">
+    <label class="field"><span>Vorgänger</span><input class="inp p" inputmode="numeric" autocomplete="off"></label>
+    <div class="center"><span class="num">${fmt(it.n)}</span></div>
+    <label class="field"><span>Nachfolger</span><input class="inp s" inputmode="numeric" autocomplete="off"></label>
+  </div>
+  <div class="actions"><button class="btn chk">Prüfen</button><button class="btn ghost sol" hidden>Lösung zeigen</button></div>
+  <p class="fb" aria-live="polite"></p>`;
+  const p=$('.p',el),s=$('.s',el),fb=$('.fb',el),chk=$('.chk',el),sol=$('.sol',el);
+  const finish=st=>{it.status=st;p.disabled=s.disabled=true;chk.hidden=sol.hidden=true;p.value=fmt(it.pred);s.value=fmt(it.succ);updateProg()};
+  chk.onclick=()=>{
+    const a=parse(p.value),b=parse(s.value);
+    if(isNaN(a)||isNaN(b)){setFb(fb,'','Trage beide Zahlen ein (nur Ziffern).');return}
+    const oa=a===it.pred,ob=b===it.succ;mark(p,oa);mark(s,ob);
+    if(oa&&ob){setFb(fb,'ok',it.first?'Richtig!':'Richtig – jetzt stimmt es.');finish('ok')}
+    else{it.first=false;setFb(fb,'bad','Noch nicht richtig. '+hintNF(it,oa,ob));sol.hidden=false;shake(el)}
+  };
+  sol.onclick=()=>{mark(p,true);mark(s,true);setFb(fb,'',`Lösung: Vorgänger ${fmt(it.pred)}, Nachfolger ${fmt(it.succ)}.`);finish('shown')};
+  [p,s].forEach(x=>x.addEventListener('keydown',e=>{if(e.key==='Enter')chk.click()}));
+}
+
+/* Größer / kleiner */
+function buildVGL(it,el){
+  el.innerHTML=`<div class="cmp"><span class="num">${fmt(it.x)}</span>
+    <span class="signs"><button class="sg" data-s="<" aria-label="kleiner als">&lt;</button><button class="sg" data-s=">" aria-label="größer als">&gt;</button></span>
+    <span class="num">${fmt(it.y)}</span></div>
+  <p class="fb" aria-live="polite"></p>`;
+  const fb=$('.fb',el),btns=[...el.querySelectorAll('.sg')];
+  btns.forEach(b=>b.onclick=()=>{
+    if(it.status)return;
+    if(b.dataset.s===it.sign){
+      btns.forEach(x=>{x.classList.remove('bad');x.disabled=true;if(x!==b)x.hidden=true});
+      b.classList.add('ok');it.status='ok';
+      setFb(fb,'ok',it.first?'Richtig!':'Richtig – jetzt stimmt es.');updateProg();
+    }else{
+      b.classList.add('bad');it.first=false;
+      setFb(fb,'bad','Falsch. Tipp: Die Spitze zeigt immer zur kleineren Zahl.');shake(el);
+    }
+  });
+}
+
+/* Ordnen */
+function buildORD(it,el){
+  el.innerHTML=`<div class="pool"></div>
+  <div class="ans" aria-label="Deine Reihenfolge"></div>
+  <div class="actions"><button class="btn chk">Prüfen</button><button class="btn ghost rst">Zurücksetzen</button><button class="btn ghost sol" hidden>Lösung zeigen</button></div>
+  <p class="fb" aria-live="polite"></p>`;
+  const pool=$('.pool',el),ans=$('.ans',el),fb=$('.fb',el),chk=$('.chk',el),rst=$('.rst',el),sol=$('.sol',el);
+  const L=it.nums.length;
+  const tile=(k,cls='')=>`<button class="tile ${cls}" data-k="${k}" ${it.status?'disabled':''}><span class="L">${it.nums[k].l}</span><span class="N">${fmt(it.nums[k].n)}</span></button>`;
+  function draw(marks){
+    const rest=it.order.filter(k=>!it.placed.includes(k));
+    pool.innerHTML=rest.length?rest.map(k=>tile(k)).join(''):'<span class="empty">Alle Karten liegen in deiner Reihe.</span>';
+    let h='';
+    for(let i=0;i<L;i++){
+      if(i)h+='<span class="lt">&lt;</span>';
+      const k=it.placed[i];
+      h+=k===undefined?'<span class="slot"></span>':tile(k,marks?(k===i?'ok':'bad'):'');
+    }
+    ans.innerHTML=h;
+    pool.querySelectorAll('.tile').forEach(b=>b.onclick=()=>{
+      if(it.status)return;it.placed.push(+b.dataset.k);setFb(fb,'','');draw();
+      const next=pool.querySelector('.tile');(next||chk).focus();
+    });
+    ans.querySelectorAll('.tile').forEach(b=>b.onclick=()=>{
+      if(it.status)return;it.placed=it.placed.filter(k=>k!==+b.dataset.k);setFb(fb,'','');draw();
+    });
+  }
+  const finish=()=>{chk.hidden=rst.hidden=sol.hidden=true;updateProg()};
+  chk.onclick=()=>{
+    if(it.placed.length<L){setFb(fb,'','Lege zuerst alle Karten in deine Reihe.');return}
+    const right=it.placed.filter((k,i)=>k===i).length;
+    if(right===L){
+      it.status='ok';draw(true);
+      setFb(fb,'ok',`${it.first?'Richtig!':'Richtig – jetzt stimmt es.'} Lösungswort: <span class="word">${it.word}</span>`);finish();
+    }else{
+      it.first=false;draw(true);sol.hidden=false;shake(el);
+      setFb(fb,'bad',`${right} von ${L} Karten stehen an der richtigen Stelle. Tippe rot markierte Karten an, um sie zurückzulegen.`);
+    }
+  };
+  rst.onclick=()=>{it.placed=[];setFb(fb,'','');draw()};
+  sol.onclick=()=>{it.placed=it.nums.map((_,i)=>i);it.status='shown';draw(true);setFb(fb,'',`Lösung – Lösungswort: <span class="word">${it.word}</span>`);finish()};
+  draw();
+}
+
+/* ---------- Start ---------- */
+document.querySelectorAll('.lv').forEach(b=>b.onclick=()=>setLevel(b.dataset.lv));
+$('#back').onclick=renderHome;
+setLevel('leicht');
+renderHome();
+</script>
+</body>
+</html>
